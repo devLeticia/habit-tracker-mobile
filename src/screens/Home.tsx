@@ -6,8 +6,8 @@ import { api } from '../lib/axios'
 import { generateDatesFromYearBeginning } from '../utils/generate-dates-from-year-beginning'
 
 import { HabitDay, DAY_SIZE } from '../components/HabitDay'
-import { useNavigation } from '@react-navigation/native'
-import { useState, useEffect } from 'react'
+import { useNavigation, useFocusEffect } from '@react-navigation/native'
+import { useState, useEffect, useCallback } from 'react'
 import dayjs from 'dayjs'
 
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
@@ -33,20 +33,21 @@ export function Home() {
       setLoading(true)
       const response = await api.get('/summary')
       setSummary(response.data)
-      console.log(response.data)
     } catch (error) {
       console.log('Deu catch no erro:', error)
       Alert.alert('Ops', 'Não foi possível carregar o resumo de hábitos')
     } finally {
-      console.log('foi pro finally')
       setLoading(false)
     }
   }
 
   //useEffect functiona como um mounted quando o segundo parametro é vazio []
-  useEffect(() => {
-    fetchData()
-  }, [])
+  // useFocusEffect esta sendo utilizado aqui pra toda vez que a pagina ganhar foco, atualiza os dados do summary
+  useFocusEffect(
+    useCallback(() => {
+      fetchData()
+    }, [])
+  )
 
   if (loading) {
     return <Loading />
