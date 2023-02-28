@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Alert } from 'react-native'
+import { View, Text, ScrollView, Alert, TouchableOpacity } from 'react-native'
 import { Header } from '../components/Header'
 import { Loading } from '../components/Loading'
 
@@ -9,6 +9,9 @@ import { HabitDay, DAY_SIZE } from '../components/HabitDay'
 import { useNavigation, useFocusEffect } from '@react-navigation/native'
 import { useState, useEffect, useCallback } from 'react'
 import dayjs from 'dayjs'
+import { Feather } from '@expo/vector-icons'
+import colors from 'tailwindcss/colors'
+import auth from '@react-native-firebase/auth'
 
 const weekDays = ['D', 'S', 'T', 'Q', 'Q', 'S', 'S']
 const datesFromYearBeginning = generateDatesFromYearBeginning()
@@ -48,6 +51,10 @@ export function Home() {
       fetchData()
     }, [])
   )
+
+  function handleSignOut() {
+    auth().signOut()
+  }
 
   if (loading) {
     return <Loading />
@@ -99,6 +106,17 @@ export function Home() {
               ))}
           </View>
         )}
+
+        <TouchableOpacity
+          className='w-full h-14 flex-row items-center justify-center bg-red-500 rounded-md mt-6'
+          activeOpacity={0.7}
+          onPress={handleSignOut}
+        >
+          <Feather name='log-out' size={20} filled color={colors.white} />
+          <Text className='font-semibold text-base text-white ml-2'>
+            Logout
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   )
